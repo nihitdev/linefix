@@ -37,7 +37,8 @@ for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 wi
       exit 1
     fi
   else
-    tar -C "$stage" -czf "${dist_dir}/${name}.tar.gz" "$binary" README.md LICENSE
+    cp "${project_dir}/man/linefix.1" "$stage/"
+    tar -C "$stage" -czf "${dist_dir}/${name}.tar.gz" "$binary" linefix.1 README.md LICENSE
   fi
   rm -rf "$stage"
 done

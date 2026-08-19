@@ -84,25 +84,3 @@ func TestConvertFilePreservesPermissions(t *testing.T) {
 		t.Fatalf("permissions = %o; want original permissions %o", got, want)
 	}
 }
-
-func TestConvertFileRejectsSymlink(t *testing.T) {
-	dir := t.TempDir()
-	target := filepath.Join(dir, "target.txt")
-	link := filepath.Join(dir, "link.txt")
-	if err := os.WriteFile(target, []byte("one\r\n"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.Symlink(target, link); err != nil {
-		t.Skipf("symlinks unavailable: %v", err)
-	}
-	if _, err := ConvertFile(link, EndingLF); err == nil || !strings.Contains(err.Error(), "symbolic link") {
-		t.Fatalf("ConvertFile() error = %v; want symbolic-link refusal", err)
-	}
-	got, err := os.ReadFile(target)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(got) != "one\r\n" {
-		t.Fatalf("target changed through symlink: %q", got)
-	}
-}

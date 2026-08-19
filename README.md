@@ -13,9 +13,6 @@ in scripts without bringing in a formatter or runtime.
 - Preserves file permissions and final-newline status
 - Skips writes when the requested format is already present
 - Refuses likely binary input
-- Converts or checks multiple files in one command
-- Supports dry-run previews and quiet scripting
-- Refuses to replace symbolic links
 - Ships as one executable for Linux, macOS, and Windows
 
 ## Installation
@@ -64,26 +61,33 @@ go install github.com/nihitdev/linefix@latest
 ## Usage
 
 ```text
-linefix [options] lf <file>...
-linefix [options] crlf <file>...
-linefix check <file>...
+linefix lf <file>
+linefix crlf <file>
+linefix check <file>
 linefix --version
+linefix --help
 ```
 
 - `lf` converts CRLF (`\r\n`) endings to LF (`\n`).
 - `crlf` converts LF endings to CRLF. Existing CRLF endings are normalized first.
 - `check` prints `LF`, `CRLF`, `Mixed`, or `No line endings`.
-- `-n`, `--dry-run` previews conversions without writing.
-- `-q`, `--quiet` suppresses successful conversion output.
 
 Examples:
 
 ```sh
 linefix check README.md
-linefix lf script.sh deploy.sh
-linefix --dry-run crlf notes.txt generated.txt
-linefix --quiet lf files/*.txt
+linefix lf script.sh
+linefix crlf notes.txt
 ```
+
+For the complete reference on Linux and macOS:
+
+```sh
+man linefix
+```
+
+The Unix installer installs the manual page under the matching user or system
+prefix. Set `MAN_DIR` to override its destination.
 
 Conversions preserve a file's final-newline status and permissions. A file that
 already has the requested endings is left untouched. Empty files and files with

@@ -1,0 +1,120 @@
+.TH LINEFIX 1 "August 2026" "linefix" "User Commands"
+.SH NAME
+linefix \- convert text-file line endings safely
+.SH SYNOPSIS
+.B linefix
+.B lf
+.I file
+.br
+.B linefix
+.B crlf
+.I file
+.br
+.B linefix
+.B check
+.I file
+.br
+.B linefix
+.RB [ \-h | \-\-help ]
+.br
+.B linefix
+.B \-\-version
+.SH DESCRIPTION
+.B linefix
+is a small, dependency-free utility for converting text files between LF and
+CRLF line endings. It modifies files in place, preserves permission bits and
+trailing-newline state, and does not rewrite files that already use the
+requested format.
+.PP
+Before processing a file,
+.B linefix
+checks for NUL bytes and an unusually high proportion of control bytes.
+Likely binary input is refused instead of modified.
+.SH COMMANDS
+.TP
+.BI "lf " file
+Convert each CRLF sequence (\er\en) to LF (\en).
+.TP
+.BI "crlf " file
+Convert LF sequences to CRLF. Existing CRLF sequences are normalized first,
+preventing accidental \er\er\en sequences.
+.TP
+.BI "check " file
+Inspect the file without modifying it and print one of
+.BR LF ,
+.BR CRLF ,
+.BR Mixed ,
+or
+.BR "No line endings" .
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Show command usage, examples, and a summary of safety behavior, then exit.
+.TP
+.B \-\-version
+Print the program name and build version, then exit.
+.SH CHECK OUTPUT
+.TP
+.B LF
+All detected line endings are LF.
+.TP
+.B CRLF
+All detected line endings are CRLF.
+.TP
+.B Mixed
+Both LF and CRLF endings are present.
+.TP
+.B No line endings
+The file is empty or contains no LF or CRLF ending.
+.SH EXIT STATUS
+.TP
+.B 0
+The command completed successfully.
+.TP
+.B 1
+A file could not be read, checked, converted, or safely replaced.
+.TP
+.B 2
+The command-line arguments were invalid.
+.SH EXAMPLES
+Check the line endings used by a file:
+.PP
+.RS
+.B linefix check README.md
+.RE
+.PP
+Normalize a shell script to LF:
+.PP
+.RS
+.B linefix lf script.sh
+.RE
+.PP
+Normalize a text file to CRLF:
+.PP
+.RS
+.B linefix crlf notes.txt
+.RE
+.SH NOTES
+Bare carriage returns are preserved and are not treated as line endings.
+An empty file and a file without a newline are valid inputs and remain
+unchanged.
+.SH FILES
+.TP
+.I ~/.local/bin/linefix
+Default executable location used by the Unix installer.
+.TP
+.I ~/.local/share/man/man1/linefix.1
+Default manual-page location used by the Unix installer.
+.SH BUGS
+Report bugs at
+.UR https://github.com/nihitdev/linefix/issues
+.UE .
+.SH LICENSE
+Copyright \(co 2026 linefix contributors.
+.PP
+Licensed under the GNU General Public License v3.0 or later
+(GPL-3.0-or-later).
+.SH SEE ALSO
+.BR file (1),
+.BR unix2dos (1),
+.BR dos2unix (1)
