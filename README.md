@@ -4,6 +4,8 @@
 in place. It exists to make line-ending cleanup explicit, safe, and easy to use
 in scripts without bringing in a formatter or runtime.
 
+[Website](https://nihitdev.github.io/linefix/) · [Documentation wiki](https://nihitdev.github.io/linefix/wiki/) · [Releases](https://github.com/nihitdev/linefix/releases)
+
 ## Features
 
 - Converts LF and CRLF safely without producing accidental `\r\r\n` sequences

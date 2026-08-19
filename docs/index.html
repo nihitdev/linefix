@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="linefix is a tiny, safe, cross-platform CLI for converting text files between LF and CRLF line endings.">
+  <meta name="theme-color" content="#101416">
+  <title>linefix — line endings, handled</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav-wrap">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="linefix home"><span class="brand-mark" aria-hidden="true">↵</span>linefix</a>
+      <div class="nav-links">
+        <a href="#install">Install</a>
+        <a href="#usage">Usage</a>
+        <a href="wiki/">Wiki</a>
+        <a class="nav-github" href="https://github.com/nihitdev/linefix">GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> v0.1.0 · zero dependencies</p>
+        <h1>Line endings,<br><em>handled.</em></h1>
+        <p class="lede">A tiny cross-platform CLI that converts text files between LF and CRLF—safely, predictably, and without touching files that are already right.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#install">Install linefix</a>
+          <a class="button secondary" href="https://github.com/nihitdev/linefix/releases/tag/v0.1.0">View release</a>
+        </div>
+        <div class="quick-command" data-copy="linefix check README.md">
+          <span class="prompt" aria-hidden="true">$</span>
+          <code>linefix check README.md</code>
+          <button class="copy" type="button" aria-label="Copy command">Copy</button>
+        </div>
+      </div>
+      <div class="terminal" aria-label="linefix terminal example">
+        <div class="terminal-bar"><span></span><span></span><span></span><small>shell</small></div>
+        <div class="terminal-body">
+          <p><b>$</b> linefix check notes.txt</p>
+          <p class="output amber">Mixed</p>
+          <p><b>$</b> linefix lf notes.txt</p>
+          <p class="output green">notes.txt: converted to LF</p>
+          <p><b>$</b> linefix check notes.txt</p>
+          <p class="output green">LF</p>
+          <span class="cursor" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust" aria-label="Project qualities">
+      <span>Go standard library only</span><span>Single executable</span><span>Linux · macOS · Windows</span><span>GPL-3.0-or-later</span>
+    </section>
+
+    <section class="section" id="why">
+      <div class="section-heading">
+        <p class="kicker">Small tool, careful behavior</p>
+        <h2>Fix the bytes.<br>Keep everything else.</h2>
+      </div>
+      <div class="features">
+        <article><span class="feature-number">01</span><h3>Safe by default</h3><p>Likely binary files are rejected before a write. CRLF is normalized before conversion, avoiding accidental doubled carriage returns.</p></article>
+        <article><span class="feature-number">02</span><h3>Respectful edits</h3><p>Permissions and trailing-newline state stay intact. Already-normalized files are left untouched.</p></article>
+        <article><span class="feature-number">03</span><h3>Built to travel</h3><p>One dependency-free executable with official AMD64 and ARM64 builds for Linux, macOS, and Windows.</p></article>
+      </div>
+    </section>
+
+    <section class="section install-section" id="install">
+      <div class="section-heading compact">
+        <p class="kicker">Get started</p>
+        <h2>Install in one command.</h2>
+        <p>Installers detect your platform and architecture, then verify the release checksum before installation.</p>
+      </div>
+      <div class="install-grid">
+        <article class="install-card active">
+          <div class="card-title"><span>Linux &amp; macOS</span><small>sh</small></div>
+          <div class="code-block" data-copy="curl -fsSL https://raw.githubusercontent.com/nihitdev/linefix/main/install.sh | sh"><code>curl -fsSL https://raw.githubusercontent.com/<br>nihitdev/linefix/main/install.sh | sh</code><button class="copy" type="button" aria-label="Copy Unix install command">Copy</button></div>
+          <p>Installs to <code>~/.local/bin</code> by default. Supports Intel and Apple Silicon Macs.</p>
+        </article>
+        <article class="install-card">
+          <div class="card-title"><span>Windows</span><small>PowerShell</small></div>
+          <div class="code-block" data-copy="irm https://raw.githubusercontent.com/nihitdev/linefix/main/install.ps1 | iex"><code>irm https://raw.githubusercontent.com/nihitdev/<br>linefix/main/install.ps1 | iex</code><button class="copy" type="button" aria-label="Copy Windows install command">Copy</button></div>
+          <p>Installs per-user and updates your user PATH without requiring Administrator privileges.</p>
+        </article>
+      </div>
+      <p class="manual-link">Prefer to inspect first? <a href="https://github.com/nihitdev/linefix/releases">Download and install manually →</a></p>
+    </section>
+
+    <section class="section usage-section" id="usage">
+      <div class="section-heading compact">
+        <p class="kicker">Three commands</p>
+        <h2>Exactly what you need.</h2>
+      </div>
+      <div class="command-list">
+        <article><div><code>linefix lf &lt;file&gt;</code><span class="tag">convert</span></div><p>Convert CRLF endings to LF.</p></article>
+        <article><div><code>linefix crlf &lt;file&gt;</code><span class="tag">convert</span></div><p>Normalize and convert LF endings to CRLF.</p></article>
+        <article><div><code>linefix check &lt;file&gt;</code><span class="tag detect">inspect</span></div><p>Report <strong>LF</strong>, <strong>CRLF</strong>, <strong>Mixed</strong>, or <strong>No line endings</strong>.</p></article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <p class="kicker">No config. No runtime. No surprises.</p>
+      <h2>Make every newline intentional.</h2>
+      <div class="hero-actions"><a class="button primary" href="#install">Install linefix</a><a class="button secondary dark" href="wiki/">Read the wiki</a></div>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">↵</span>linefix</a><p>Fast, reliable line-ending conversion.</p><p><a href="https://github.com/nihitdev/linefix/blob/main/LICENSE">GPL-3.0-or-later</a> · <a href="https://github.com/nihitdev/linefix">Source</a></p></footer>
+  <script src="site.js"></script>
+</body>
+</html>
