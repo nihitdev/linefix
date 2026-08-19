@@ -81,9 +81,16 @@ func CheckFile(path string) (string, error) {
 
 // ConvertFile converts a text file in place. An unchanged file is not rewritten.
 func ConvertFile(path string, ending LineEnding) (bool, error) {
-	info, err := os.Stat(path)
+	return convertFile(path, ending, true)
+}
+
+func convertFile(path string, ending LineEnding, write bool) (bool, error) {
+	info, err := os.Lstat(path)
 	if err != nil {
 		return false, fmt.Errorf("stat %q: %w", path, err)
+	}
+	if info.Mode()&os.ModeSymlink != 0 {
+		return false, fmt.Errorf("%q is a symbolic link; refusing to replace it", path)
 	}
 	if !info.Mode().IsRegular() {
 		return false, fmt.Errorf("%q is not a regular file", path)
@@ -98,6 +105,9 @@ func ConvertFile(path string, ending LineEnding) (bool, error) {
 	}
 	if !changed {
 		return false, nil
+	}
+	if !write {
+		return true, nil
 	}
 	if err := replaceFile(path, converted, info.Mode().Perm()); err != nil {
 		return false, err
