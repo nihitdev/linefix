@@ -1,0 +1,5 @@
+/linefix
+/linefix.exe
+*.test
+coverage.out
+/dist/
