@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime/debug"
+	"strings"
 )
 
 // version is replaced for releases with: -ldflags "-X main.version=<version>".
@@ -33,7 +35,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintln(stderr, "linefix: --version does not accept arguments")
 			return 2
 		}
-		fmt.Fprintf(stdout, "linefix %s\n", version)
+		fmt.Fprintf(stdout, "linefix %s\n", buildVersion())
 		return 0
 	}
 	if fs.NArg() != 2 {
@@ -69,6 +71,26 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "Try 'linefix --help' for usage.")
 		return 2
 	}
+}
+
+func buildVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	return resolveVersion(version, info, ok)
+}
+
+func resolveVersion(injected string, info *debug.BuildInfo, ok bool) string {
+	if injected != "dev" {
+		return injected
+	}
+	if !ok || info.Main.Version == "" || info.Main.Version == "(devel)" {
+		return injected
+	}
+	for _, setting := range info.Settings {
+		if setting.Key == "vcs.revision" {
+			return injected
+		}
+	}
+	return strings.TrimPrefix(info.Main.Version, "v")
 }
 
 func printError(w io.Writer, err error) {

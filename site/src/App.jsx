@@ -217,7 +217,7 @@ function LandingPage() {
         <section className="hero" id="top">
           <div className="hero-grid" aria-hidden="true" />
           <Reveal className="hero-content">
-            <a className="release-pill" href={`${REPOSITORY}/releases/tag/v0.1.0`}><span>New</span> v0.1.0 is available <b>→</b></a>
+            <a className="release-pill" href={`${REPOSITORY}/releases/tag/v0.1.1`}><span>New</span> v0.1.1 is available <b>→</b></a>
             <h1>Every newline.<br /><em>Exactly right.</em></h1>
             <p className="hero-lede">Convert LF and CRLF without touching anything else. A focused, dependency-free CLI built for scripts, repositories, and humans.</p>
             <div className="hero-actions"><a className="button button-primary" href="#install">Install linefix <b>↓</b></a><a className="button button-ghost" href="/docs">Read the docs <b>→</b></a></div>
