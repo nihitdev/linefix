@@ -69,14 +69,18 @@ func TestConvertFilePreservesPermissions(t *testing.T) {
 	if err := os.WriteFile(path, []byte("one\r\ntwo\r\n"), 0o640); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := ConvertFile(path, EndingLF); err != nil {
-		t.Fatal(err)
-	}
-	info, err := os.Stat(path)
+	before, err := os.Stat(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := info.Mode().Perm(); got != 0o640 {
-		t.Fatalf("permissions = %o; want 640", got)
+	if _, err := ConvertFile(path, EndingLF); err != nil {
+		t.Fatal(err)
+	}
+	after, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := after.Mode().Perm(), before.Mode().Perm(); got != want {
+		t.Fatalf("permissions = %o; want original permissions %o", got, want)
 	}
 }
