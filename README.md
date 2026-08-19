@@ -46,17 +46,32 @@ This installs to `%LOCALAPPDATA%\Programs\linefix\bin`, verifies the checksum,
 and adds that directory to the current user's `PATH`. It does not require
 Administrator privileges and is safe to run again when upgrading.
 
+### Install with Go
+
+Go includes build, test, dependency, and installation tooling in its built-in
+`go` command—the closest equivalent to Rust's Cargo. With Go 1.22 or newer:
+
+```sh
+go install github.com/nihitdev/linefix@latest
+```
+
+The executable is installed to `$GOBIN`, or to `$GOPATH/bin` when `GOBIN` is
+not set. Make sure that directory is on your `PATH`.
+
+Common Cargo commands have direct Go equivalents:
+
+| Rust / Cargo | Go |
+| --- | --- |
+| `cargo build` | `go build` |
+| `cargo test` | `go test ./...` |
+| `cargo install <crate>` | `go install <module>@latest` |
+| `cargo run -- <args>` | `go run . <args>` |
+
 ### Manual installation
 
 Download the archive for your OS and architecture from [GitHub Releases](https://github.com/nihitdev/linefix/releases),
 verify it against `SHA256SUMS`, extract it, and place `linefix` (or
 `linefix.exe`) in a directory on your `PATH`.
-
-With Go 1.22 or newer, you can instead build the current development version:
-
-```sh
-go install github.com/nihitdev/linefix@latest
-```
 
 ## Usage
 

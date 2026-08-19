@@ -3,6 +3,12 @@ import { useEffect, useRef, useState } from "react";
 const REPOSITORY = "https://github.com/nihitdev/linefix";
 const UNIX_INSTALL = "curl -fsSL https://raw.githubusercontent.com/nihitdev/linefix/main/install.sh | sh";
 const WINDOWS_INSTALL = "irm https://raw.githubusercontent.com/nihitdev/linefix/main/install.ps1 | iex";
+const GO_INSTALL = "go install github.com/nihitdev/linefix@latest";
+const INSTALL_OPTIONS = {
+  unix: { label: "Linux / macOS", prompt: "$", command: UNIX_INSTALL, notes: ["checksum verified", "no root required", "Intel + Apple Silicon"] },
+  windows: { label: "Windows", prompt: ">", command: WINDOWS_INSTALL, notes: ["checksum verified", "per-user install", "PATH configured"] },
+  go: { label: "Go", prompt: "$", command: GO_INSTALL, notes: ["Go 1.22+", "cross-platform", "installs to GOBIN"] },
+};
 
 function Logo() {
   return <span className="brand-glyph" aria-hidden="true"><i /><i /></span>;
@@ -128,11 +134,11 @@ function FileCard({ after = false }) {
 function Installer() {
   const [platform, setPlatform] = useState(() => /Win/i.test(navigator.userAgent) ? "windows" : "unix");
   const [copied, setCopied] = useState(false);
-  const command = platform === "windows" ? WINDOWS_INSTALL : UNIX_INSTALL;
+  const option = INSTALL_OPTIONS[platform];
 
   async function copyCommand() {
     try {
-      await navigator.clipboard.writeText(command);
+      await navigator.clipboard.writeText(option.command);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
@@ -143,12 +149,11 @@ function Installer() {
   return (
     <Reveal className="installer delay-1">
       <div className="installer-tabs" role="tablist" aria-label="Installation platform">
-        <button className={`install-tab ${platform === "unix" ? "active" : ""}`} type="button" role="tab" aria-selected={platform === "unix"} onClick={() => setPlatform("unix")}>Linux / macOS</button>
-        <button className={`install-tab ${platform === "windows" ? "active" : ""}`} type="button" role="tab" aria-selected={platform === "windows"} onClick={() => setPlatform("windows")}>Windows</button>
+        {Object.entries(INSTALL_OPTIONS).map(([key, item]) => <button key={key} className={`install-tab ${platform === key ? "active" : ""}`} type="button" role="tab" aria-selected={platform === key} onClick={() => setPlatform(key)}>{item.label}</button>)}
       </div>
       <div className="install-panel" role="tabpanel">
-        <div className="install-command"><span>{platform === "windows" ? ">" : "$"}</span><code>{command}</code><button className="copy" type="button" onClick={copyCommand} aria-label="Copy installation command"><span>{copied ? "Copied!" : "Copy"}</span></button></div>
-        <div className="install-notes">{platform === "windows" ? <><span>✓ checksum verified</span><span>✓ per-user install</span><span>✓ PATH configured</span></> : <><span>✓ checksum verified</span><span>✓ no root required</span><span>✓ Intel + Apple Silicon</span></>}</div>
+        <div className="install-command"><span>{option.prompt}</span><code>{option.command}</code><button className="copy" type="button" onClick={copyCommand} aria-label="Copy installation command"><span>{copied ? "Copied!" : "Copy"}</span></button></div>
+        <div className="install-notes">{option.notes.map((note) => <span key={note}>✓ {note}</span>)}</div>
       </div>
       <a className="manual-download" href={`${REPOSITORY}/releases`}>Or download a release manually <b>↗</b></a>
     </Reveal>
@@ -235,7 +240,7 @@ function LandingPage() {
 
         <FileInspector />
 
-        <section className="install-section" id="install"><div className="install-inner"><Reveal className="section-intro light"><p className="eyebrow">Install in seconds</p><h2>Pick a shell.<br />Paste. Done.</h2><p>The installer identifies your system, downloads the correct release, and verifies its SHA-256 checksum before installing.</p></Reveal><Installer /></div></section>
+        <section className="install-section" id="install"><div className="install-inner"><Reveal className="section-intro light"><p className="eyebrow">Install in seconds</p><h2>Pick a method.<br />Paste. Done.</h2><p>Use a checksum-verifying native installer, or install cross-platform with Go's built-in toolchain.</p></Reveal><Installer /></div></section>
 
         <section className="section commands" id="commands">
           <Reveal className="commands-heading"><p className="eyebrow">Command reference</p><h2>Three commands.<br />Zero guesswork.</h2></Reveal>
@@ -266,7 +271,7 @@ function DocsPage() {
 
 function DocsContent() {
   return <>
-    <section id="installation"><h2>Installation</h2><h3>Linux and macOS</h3><pre><code>{UNIX_INSTALL}</code></pre><p>The checksum-verifying installer detects Linux or macOS and AMD64 or ARM64, then installs to <code>~/.local/bin</code>.</p><h3>Windows</h3><pre><code>{WINDOWS_INSTALL}</code></pre><p>Run in PowerShell. It installs per-user and adds the directory to PATH without Administrator privileges.</p></section>
+    <section id="installation"><h2>Installation</h2><h3>Linux and macOS</h3><pre><code>{UNIX_INSTALL}</code></pre><p>The checksum-verifying installer detects Linux or macOS and AMD64 or ARM64, then installs to <code>~/.local/bin</code>.</p><h3>Windows</h3><pre><code>{WINDOWS_INSTALL}</code></pre><p>Run in PowerShell. It installs per-user and adds the directory to PATH without Administrator privileges.</p><h3>Install with Go</h3><pre><code>{GO_INSTALL}</code></pre><p>Go's built-in <code>go</code> command fills the same role as Cargo in Rust. With Go 1.22 or newer, this installs linefix to <code>$GOBIN</code>, or <code>$GOPATH/bin</code> when <code>GOBIN</code> is not set.</p><div className="docs-table"><div><code>cargo build</code><span><code>go build</code></span></div><div><code>cargo test</code><span><code>go test ./...</code></span></div><div><code>cargo install &lt;crate&gt;</code><span><code>go install &lt;module&gt;@latest</code></span></div><div><code>cargo run -- &lt;args&gt;</code><span><code>go run . &lt;args&gt;</code></span></div></div></section>
     <section id="commands-docs"><h2>Command reference</h2><div className="docs-table"><div><code>linefix lf &lt;file&gt;</code><span>Convert CRLF to LF</span></div><div><code>linefix crlf &lt;file&gt;</code><span>Normalize and convert LF to CRLF</span></div><div><code>linefix check &lt;file&gt;</code><span>Print LF, CRLF, Mixed, or No line endings</span></div><div><code>linefix --version</code><span>Print the build version</span></div></div><h3>Exit codes</h3><ul><li><code>0</code> — success</li><li><code>1</code> — file or conversion error</li><li><code>2</code> — invalid arguments</li></ul></section>
     <section id="internals"><h2>How it works</h2><p>linefix reads a regular file, samples it for likely binary content, converts bytes in memory, and writes only when the result differs. Existing CRLF is normalized before CRLF conversion, so each newline is expanded exactly once.</p><h3>Safe replacement</h3><ol><li>Create a temporary file beside the original.</li><li>Apply the original permission bits.</li><li>Write and sync the converted content.</li><li>Replace the original path.</li></ol></section>
     <section id="development"><h2>Development</h2><p>Go 1.22 or newer is required. linefix has no third-party Go dependencies.</p><pre><code>git clone https://github.com/nihitdev/linefix.git{"\n"}cd linefix{"\n"}gofmt -w .{"\n"}go vet ./...{"\n"}go test ./...{"\n"}go build .</code></pre></section>
