@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const REPOSITORY = "https://github.com/nihitdev/linefix";
 const UNIX_INSTALL = "curl -fsSL https://raw.githubusercontent.com/nihitdev/linefix/main/install.sh | sh";
@@ -6,6 +6,74 @@ const WINDOWS_INSTALL = "irm https://raw.githubusercontent.com/nihitdev/linefix/
 
 function Logo() {
   return <span className="brand-glyph" aria-hidden="true"><i /><i /></span>;
+}
+
+function CustomCursor() {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+
+  useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!finePointer.matches || reducedMotion.matches) return undefined;
+
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    const position = { x: -100, y: -100, ringX: -100, ringY: -100 };
+    let frame;
+    let activeCard;
+
+    document.documentElement.classList.add("has-custom-cursor");
+
+    function render() {
+      position.ringX += (position.x - position.ringX) * 0.16;
+      position.ringY += (position.y - position.ringY) * 0.16;
+      dot.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`;
+      ring.style.transform = `translate3d(${position.ringX}px, ${position.ringY}px, 0)`;
+      frame = requestAnimationFrame(render);
+    }
+
+    function move(event) {
+      position.x = event.clientX;
+      position.y = event.clientY;
+      const interactive = event.target.closest("a, button, label, input");
+      ring.classList.toggle("cursor-hover", Boolean(interactive));
+      const card = event.target.closest(".bento-card, .ending-card, .file-inspector, .installer");
+      if (activeCard && activeCard !== card) activeCard.classList.remove("pointer-lit");
+      activeCard = card;
+      if (card) {
+        const bounds = card.getBoundingClientRect();
+        card.style.setProperty("--pointer-x", `${event.clientX - bounds.left}px`);
+        card.style.setProperty("--pointer-y", `${event.clientY - bounds.top}px`);
+        card.classList.add("pointer-lit");
+      }
+    }
+
+    const press = () => ring.classList.add("cursor-down");
+    const release = () => ring.classList.remove("cursor-down");
+    const hide = () => { dot.classList.add("cursor-hidden"); ring.classList.add("cursor-hidden"); };
+    const show = () => { dot.classList.remove("cursor-hidden"); ring.classList.remove("cursor-hidden"); };
+
+    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", press, { passive: true });
+    window.addEventListener("pointerup", release, { passive: true });
+    document.addEventListener("mouseleave", hide);
+    document.addEventListener("mouseenter", show);
+    frame = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      document.documentElement.classList.remove("has-custom-cursor");
+      if (activeCard) activeCard.classList.remove("pointer-lit");
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", press);
+      window.removeEventListener("pointerup", release);
+      document.removeEventListener("mouseleave", hide);
+      document.removeEventListener("mouseenter", show);
+    };
+  }, []);
+
+  return <><span className="cursor-dot" ref={dotRef} aria-hidden="true" /><span className="cursor-ring" ref={ringRef} aria-hidden="true"><i /></span></>;
 }
 
 function Header({ docs = false }) {
@@ -222,5 +290,5 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  return window.location.pathname.startsWith("/docs") ? <DocsPage /> : <LandingPage />;
+  return <><CustomCursor />{window.location.pathname.startsWith("/docs") ? <DocsPage /> : <LandingPage />}</>;
 }

@@ -21,6 +21,15 @@ body { margin: 0; background: var(--ink); color: var(--cream); font-family: var(
 a { color: inherit; }
 button { font: inherit; }
 :focus-visible { outline: 2px solid var(--acid); outline-offset: 4px; }
+.has-custom-cursor, .has-custom-cursor a, .has-custom-cursor button, .has-custom-cursor label, .has-custom-cursor input { cursor: none !important; }
+.cursor-dot, .cursor-ring { position: fixed; z-index: 9999; left: 0; top: 0; display: none; pointer-events: none; will-change: transform; }
+.has-custom-cursor .cursor-dot, .has-custom-cursor .cursor-ring { display: block; }
+.cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 16px rgba(200,255,61,.55); transition: opacity .15s; }
+.cursor-ring { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
+.cursor-ring i { position: absolute; inset: 0; border: 1px solid rgba(200,255,61,.6); border-radius: 50%; transition: transform .2s ease, background .2s ease, border-color .2s ease; }
+.cursor-ring.cursor-hover i { transform: scale(1.55); border-color: rgba(200,255,61,.8); background: rgba(200,255,61,.09); }
+.cursor-ring.cursor-down i { transform: scale(.72); background: rgba(200,255,61,.2); }
+.cursor-ring.cursor-hidden, .cursor-dot.cursor-hidden { opacity: 0; }
 .skip-link { position: fixed; left: 12px; top: -60px; z-index: 100; background: var(--acid); color: var(--ink); padding: 10px 14px; border-radius: 6px; font-weight: 800; }
 .skip-link:focus { top: 12px; }
 .site-glow { position: fixed; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 76% 8%, rgba(200,255,61,.09), transparent 28%), radial-gradient(circle at 15% 30%, rgba(111,240,174,.05), transparent 25%); }
@@ -92,6 +101,9 @@ h1 em { color: var(--acid); font-family: Georgia, serif; font-weight: 400; }
 .section-intro > p:last-child { max-width: 580px; margin-top: 24px; color: var(--muted); font-size: 17px; }
 .bento { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
 .bento-card { position: relative; min-height: 350px; padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--ink-2); }
+.bento-card::before, .ending-card::before, .file-inspector::before, .installer::before { content: ""; position: absolute; z-index: 0; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(340px circle at var(--pointer-x) var(--pointer-y), rgba(200,255,61,.1), transparent 52%); transition: opacity .3s; }
+.pointer-lit::before { opacity: 1; }
+.bento-card > *, .ending-card > *, .file-inspector > *, .installer > * { position: relative; z-index: 1; }
 .bento-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(145deg, rgba(255,255,255,.025), transparent 45%); }
 .bento-main { grid-row: span 2; min-height: 716px; }
 .bento-wide { grid-column: 1 / -1; min-height: 310px; display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; }
@@ -116,7 +128,8 @@ h1 em { color: var(--acid); font-family: Georgia, serif; font-weight: 400; }
 .playground-section { background: #e2f0de; color: var(--ink); }
 .playground-inner { width: min(1180px, calc(100% - 48px)); margin: auto; padding: 125px 0; display: grid; grid-template-columns: .82fr 1.18fr; align-items: center; gap: 90px; }
 .playground-inner .section-intro { margin: 0; }
-.file-inspector { display: grid; grid-template-columns: 1fr 1fr; min-height: 360px; border: 1px solid var(--dark-line); border-radius: 14px; background: rgba(255,255,255,.62); box-shadow: 12px 14px 0 rgba(10,13,12,.08); overflow: hidden; }
+.file-inspector { position: relative; display: grid; grid-template-columns: 1fr 1fr; min-height: 360px; border: 1px solid var(--dark-line); border-radius: 14px; background: rgba(255,255,255,.62); box-shadow: 12px 14px 0 rgba(10,13,12,.08); overflow: hidden; }
+.file-inspector::before, .installer::before { background: radial-gradient(340px circle at var(--pointer-x) var(--pointer-y), rgba(74,142,101,.14), transparent 54%); }
 .drop-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; border-right: 1px dashed rgba(10,13,12,.25); cursor: pointer; text-align: center; transition: background .2s; }
 .drop-zone:hover, .drop-zone.dragging { background: rgba(200,255,61,.35); }
 .drop-zone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
@@ -148,7 +161,7 @@ h1 em { color: var(--acid); font-family: Georgia, serif; font-weight: 400; }
 .section-intro.light { margin: 0; }
 .light .eyebrow { color: #457d5f; }
 .light > p:last-child { color: #626a66; }
-.installer { border: 1px solid var(--dark-line); border-radius: 13px; background: var(--paper); box-shadow: 12px 14px 0 rgba(10,13,12,.09); overflow: hidden; }
+.installer { position: relative; border: 1px solid var(--dark-line); border-radius: 13px; background: var(--paper); box-shadow: 12px 14px 0 rgba(10,13,12,.09); overflow: hidden; }
 .installer-tabs { display: flex; border-bottom: 1px solid var(--dark-line); }
 .install-tab { flex: 1; padding: 17px; border: 0; border-right: 1px solid var(--dark-line); background: transparent; color: #737a76; cursor: pointer; font: 800 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
 .install-tab:last-child { border: 0; }
@@ -200,7 +213,7 @@ footer > div a:hover { color: var(--acid); }
 .reveal.visible { opacity: 1; transform: none; }
 .delay-1 { transition-delay: .1s; }
 .delay-2 { transition-delay: .18s; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ticker div { animation: none; } .reveal { opacity: 1; transform: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .ticker div { animation: none; } .reveal { opacity: 1; transform: none; transition: none; } .cursor-dot, .cursor-ring { display: none !important; } }
 
 /* Documentation */
 .docs-shell { width: min(1120px, calc(100% - 48px)); min-height: 100vh; margin: auto; padding: 145px 0 120px; display: grid; grid-template-columns: 220px minmax(0, 760px); gap: 80px; }
