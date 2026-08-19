@@ -150,7 +150,7 @@ h1 em { color: var(--acid); font-family: Georgia, serif; font-weight: 400; }
 .final-cta p:not(.eyebrow) { font-size: 17px; }
 .centered { justify-content: center; }
 .button-dark { border-color: var(--ink); color: var(--ink); }
-.final-mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2vw; opacity: .07; font: 900 clamp(130px, 25vw, 390px)/1 var(--mono); letter-spacing: -.15em; }
+.final-mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2vw; opacity: .07; pointer-events: none; user-select: none; font: 900 clamp(130px, 25vw, 390px)/1 var(--mono); letter-spacing: -.15em; }
 .final-mark i { width: 10vw; border-top: 10px solid; }
 
 footer { width: min(1240px, calc(100% - 48px)); min-height: 110px; margin: auto; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; color: #717a75; font-size: 11px; }
